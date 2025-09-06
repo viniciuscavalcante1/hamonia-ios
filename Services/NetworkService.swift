@@ -50,6 +50,16 @@ struct ChatMessagePayload: Codable {
     let content: String
 }
 
+struct HabitSuggestion: Codable, Identifiable {
+    let name: String
+    let icon: String
+    var id: String { name }
+}
+
+struct ErrorResponse: Codable {
+    let detail: String
+}
+
 
 // MARK: Network Service
 class NetworkService {
@@ -62,7 +72,7 @@ class NetworkService {
 
     private init() {}
     
-    /// Converte snake para camel
+    /// Converte snake_case para camelCase
     private func createDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -126,11 +136,19 @@ class NetworkService {
             DispatchQueue.main.async {
                 if let error = error { completion(.failure(error)); return }
                 guard let data = data else { completion(.failure(URLError(.badServerResponse))); return }
+                
                 do {
                     let coachResponse = try self.createDecoder().decode(CoachResponse.self, from: data)
                     completion(.success(coachResponse.answer))
                 } catch {
-                    print("Erro ao enviar mensagem ao endpoint ask_coach: \(error)"); completion(.failure(error))
+                    do {
+                        let errorResponse = try self.createDecoder().decode(ErrorResponse.self, from: data)
+                        let customError = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: errorResponse.detail])
+                        completion(.failure(customError))
+                    } catch let decodingError {
+                        print("Erro ao decodificar tanto CoachResponse quanto ErrorResponse: \(decodingError)")
+                        completion(.failure(decodingError))
+                    }
                 }
             }
         }.resume()
@@ -138,16 +156,7 @@ class NetworkService {
     
     /// Busca dados para montar o dashboard
     func fetchDashboardData(userId: Int, completion: @escaping (Result<DashboardDataResponse, Error>) -> Void) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let todayString = dateFormatter.string(from: Date())
-
-        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("/dashboard/user/\(userId)"), resolvingAgainstBaseURL: true)
-        urlComponents?.queryItems = [ URLQueryItem(name: "date_str", value: todayString) ]
-        
-        guard let url = urlComponents?.url else {
-            completion(.failure(URLError(.badURL))); return
-        }
+        let url = baseURL.appendingPathComponent("/dashboard/user/\(userId)")
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             DispatchQueue.main.async {
@@ -225,6 +234,64 @@ class NetworkService {
                     completion(.success(newHabit))
                 } catch {
                     print("Erro em addHabit(): \(error)"); completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+    
+    /// Salva o objetivo principal do usuário no backend
+    func updateUserGoal(goal: String, userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/users/\(userId)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: String] = ["main_goal": goal]
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+        } catch {
+            completion(.failure(error)); return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error { completion(.failure(error)); return }
+                guard let data = data else { completion(.failure(URLError(.badServerResponse))); return }
+                do {
+                    let updatedUser = try self.createDecoder().decode(User.self, from: data)
+                    completion(.success(updatedUser))
+                } catch {
+                    print("Erro em updateUserGoal(): \(error)"); completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    /// Busca sugestões de hábitos com base em um objetivo
+    func fetchSuggestedHabits(for objective: String, completion: @escaping (Result<[HabitSuggestion], Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/onboarding/suggest-habits")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["objective": objective]
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+        } catch {
+            completion(.failure(error)); return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error { completion(.failure(error)); return }
+                guard let data = data else { completion(.failure(URLError(.badServerResponse))); return }
+                do {
+                    let suggestions = try self.createDecoder().decode([HabitSuggestion].self, from: data)
+                    completion(.success(suggestions))
+                } catch {
+                    print("Erro em fetchSuggestedHabits(): \(error)"); completion(.failure(error))
                 }
             }
         }.resume()

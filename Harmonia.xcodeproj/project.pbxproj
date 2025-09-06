@@ -22,6 +22,8 @@
 		9876B0F42E63BC5C00DA9703 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9876B0EA2E63BA2A00DA9703 /* NetworkService.swift */; };
 		9876B0F62E64FA2000DA9703 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9876B0F52E64FA2000DA9703 /* SplashScreenView.swift */; };
 		9876B0F82E65012F00DA9703 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9876B0F72E65012F00DA9703 /* DashboardViewModel.swift */; };
+		9878E4CE2E6CE8EF00BD10C6 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4CD2E6CE8EF00BD10C6 /* OnboardingView.swift */; };
+		9878E4D12E6CE96D00BD10C6 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4D02E6CE96D00BD10C6 /* OnboardingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		9876B0F52E64FA2000DA9703 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		9876B0F72E65012F00DA9703 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		9876B0F92E650F6E00DA9703 /* Harmonia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Harmonia.entitlements; sourceTree = "<group>"; };
+		9878E4CD2E6CE8EF00BD10C6 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		9878E4D02E6CE96D00BD10C6 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +92,7 @@
 				9876B0F52E64FA2000DA9703 /* SplashScreenView.swift */,
 				98755C6E2E659C2B00AD8CA4 /* ProfileView.swift */,
 				98755C742E65BBC900AD8CA4 /* AddHabitView.swift */,
+				9878E4CD2E6CE8EF00BD10C6 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -98,6 +103,7 @@
 				9876B0F72E65012F00DA9703 /* DashboardViewModel.swift */,
 				98755C702E659C4C00AD8CA4 /* ProfileViewModel.swift */,
 				98755C722E65A53800AD8CA4 /* CoachViewModel.swift */,
+				9878E4D02E6CE96D00BD10C6 /* OnboardingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -193,9 +199,11 @@
 				98755C752E65BBC900AD8CA4 /* AddHabitView.swift in Sources */,
 				9876B0DB2E63B86000DA9703 /* HarmoniaApp.swift in Sources */,
 				98755C712E659C4C00AD8CA4 /* ProfileViewModel.swift in Sources */,
+				9878E4D12E6CE96D00BD10C6 /* OnboardingViewModel.swift in Sources */,
 				9876B0F32E63BACB00DA9703 /* CoachView.swift in Sources */,
 				9876B0F42E63BC5C00DA9703 /* NetworkService.swift in Sources */,
 				9876B0F62E64FA2000DA9703 /* SplashScreenView.swift in Sources */,
+				9878E4CE2E6CE8EF00BD10C6 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

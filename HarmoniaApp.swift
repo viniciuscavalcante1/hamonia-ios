@@ -18,6 +18,8 @@ import SwiftUI
 struct HarmoniaApp: App {
     @AppStorage("isUserAuthenticated") private var isUserAuthenticated: Bool = false
     
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    
     @State private var isSplashScreenActive: Bool = true
 
     var body: some Scene {
@@ -26,7 +28,12 @@ struct HarmoniaApp: App {
                 if isSplashScreenActive {
                     SplashScreenView(isActive: $isSplashScreenActive)
                 } else if isUserAuthenticated {
-                    AppTabView()
+                    if hasCompletedOnboarding {
+                        AppTabView()
+                    }
+                    else {
+                        OnboardingView()
+                    }
                 } else {
                     LoginView()
                 }
