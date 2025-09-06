@@ -37,8 +37,13 @@ class CoachViewModel: ObservableObject {
             messages.append(ChatMessage(content: errorMessage, isUser: false))
             return
         }
+        
+        let historyPayload = messages.dropLast().suffix(6).map { message -> ChatMessagePayload in
+                let role = message.isUser ? "user" : "model"
+                return ChatMessagePayload(role: role, content: message.content)
+            }
 
-        NetworkService.shared.askCoach(prompt: userPrompt, userId: userId) { [weak self] result in
+        NetworkService.shared.askCoach(currentMessage: userPrompt, history: Array(historyPayload), userId: userId) { [weak self] result in
             self?.isLoading = false
             switch result {
             case .success(let answer):

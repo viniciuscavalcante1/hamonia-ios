@@ -41,14 +41,15 @@ struct Habit: Codable, Identifiable {
     let date: String
 }
 
-struct CoachRequest: Codable {
-    let text: String
-    let userId: Int
-}
-
 struct CoachResponse: Codable {
     let answer: String
 }
+
+struct ChatMessagePayload: Codable {
+    let role: String
+    let content: String
+}
+
 
 // MARK: Network Service
 class NetworkService {
@@ -74,7 +75,7 @@ class NetworkService {
         let email: String
     }
     
-    /// Login e cadastrno no back
+    /// Login e cadastro no back
     func login(name: String, email: String, completion: @escaping (Result<User, Error>) -> Void) {
         let url = baseURL.appendingPathComponent("/users/login")
         var request = URLRequest(url: url)
@@ -102,16 +103,21 @@ class NetworkService {
         }.resume()
     }
 
-    /// Envia request para o endpoint de coach
-    func askCoach(prompt: String, userId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    /// Envia request para o endpoint de coach, incluindo o histórico da conversa.
+    func askCoach(currentMessage: String, history: [ChatMessagePayload], userId: Int, completion: @escaping (Result<String, Error>) -> Void) {
         let url = baseURL.appendingPathComponent("/coach/ask")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let requestBody = CoachRequest(text: prompt, userId: userId)
+
+        let requestBody: [String: Any] = [
+            "current_message": currentMessage,
+            "history": history.map { ["role": $0.role, "content": $0.content] },
+            "user_id": userId
+        ]
         
         do {
-            request.httpBody = try JSONEncoder().encode(requestBody)
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
         } catch {
             completion(.failure(error)); return
         }
