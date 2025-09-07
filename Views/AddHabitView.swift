@@ -15,8 +15,10 @@ struct AddHabitView: View {
     @State private var habitName: String = ""
     @State private var selectedIcon: String = "star.fill"
     
-    // Opções de ícones
-    let iconOptions = ["star.fill", "heart.fill", "book.fill", "figure.walk", "drop.fill", "flame.fill", "leaf.fill"]
+    let iconOptions = [
+        "star.fill", "heart.fill", "book.fill", "figure.walk", "drop.fill",
+        "flame.fill", "leaf.fill", "bed.double.fill", "fork.knife", "dumbbell.fill"
+    ]
     
     var body: some View {
         NavigationView {
@@ -30,7 +32,7 @@ struct AddHabitView: View {
                         ForEach(iconOptions, id: \.self) { icon in
                             Image(systemName: icon)
                                 .font(.title)
-                                .padding()
+                                .frame(width: 50, height: 50)
                                 .background(selectedIcon == icon ? Color.accentColor.opacity(0.3) : Color(.systemGray6))
                                 .clipShape(Circle())
                                 .onTapGesture {
@@ -38,6 +40,7 @@ struct AddHabitView: View {
                                 }
                         }
                     }
+                    .padding(.vertical, 5)
                 }
             }
             .navigationTitle("Novo hábito")

@@ -45,26 +45,26 @@ struct DashboardView: View {
                             .padding().background(Color(.secondarySystemBackground)).cornerRadius(16)
                             
                             Text("Seus hábitos de hoje").font(.title2.bold())
-                            
+        
                             if viewModel.isLoading && viewModel.habits.isEmpty {
                                 ProgressView()
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 40)
                             } else if viewModel.habits.isEmpty {
                                 VStack(spacing: 10) {
-                                    Image(systemName: "moon.zzz.fill")
+                                    Image(systemName: "sparkles")
                                         .font(.largeTitle).foregroundStyle(.secondary)
-                                    Text("Nenhum hábito para hoje.").font(.headline)
-                                    Text("Aproveite para descansar ou adicione um novo hábito!").font(.caption).foregroundStyle(.secondary)
+                                    Text("Nenhum hábito cadastrado.").font(.headline)
+                                    Text("Toque no botão '+' para adicionar seu primeiro hábito!").font(.caption).foregroundStyle(.secondary)
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 40)
                             } else {
                                 ForEach(viewModel.habits) { habit in
-                                    HabitRow(habit: habit)
-                                        .onTapGesture {
-                                            viewModel.toggleCompletion(for: habit)
-                                        }
+                                    NavigationLink(destination: HabitDetailView(habit: habit)) {
+                                        HabitRow(habit: habit, viewModel: viewModel)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                         }
@@ -78,7 +78,6 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
             .toolbar {
-                // Botão novo hábito
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         viewModel.isAddingHabit = true
@@ -87,22 +86,20 @@ struct DashboardView: View {
                     }
                 }
             }
-            // Adição de hábito
             .sheet(isPresented: $viewModel.isAddingHabit) {
                 AddHabitView(viewModel: viewModel)
             }
             .onAppear {
-                if viewModel.habits.isEmpty {
-                    viewModel.fetchDashboardData()
-                }
+                viewModel.fetchDashboardData()
             }
         }
     }
 }
 
-
 struct HabitRow: View {
-    let habit: Habit
+    let habit: HabitStatus
+    @ObservedObject var viewModel: DashboardViewModel
+
     var body: some View {
         HStack {
             Image(systemName: habit.icon)
@@ -110,8 +107,16 @@ struct HabitRow: View {
                 .foregroundColor(habit.isCompleted ? .white : .accentColor)
             Text(habit.name).font(.headline)
             Spacer()
-            Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
-                .font(.title).foregroundColor(habit.isCompleted ? Color("AppGreen") : Color(.systemGray4))
+            
+            Button(action: {
+                viewModel.toggleCompletion(for: habit)
+            }) {
+                Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .font(.title)
+                    .foregroundColor(habit.isCompleted ? Color("AppGreen") : Color(.systemGray4))
+            }
+            
+            .buttonStyle(BorderlessButtonStyle())
         }
         .padding()
         .background(habit.isCompleted ? Color.accentColor.opacity(0.8) : Color(.secondarySystemBackground))
@@ -141,8 +146,3 @@ struct MetricCard: View {
     }
 }
 
-struct DashboardView_Previews: PreviewProvider {
-    static var previews: some View {
-        DashboardView()
-    }
-}

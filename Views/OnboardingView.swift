@@ -1,18 +1,34 @@
+//
+//  OnboardingView.swift
+//  Harmonia
+//
+//  Created by Vinícius Cavalcante on 07/09/2025.
+//
+
 import SwiftUI
 
 struct OnboardingView: View {
     @StateObject private var viewModel = OnboardingViewModel()
     
     var body: some View {
-        NavigationView {
-            VStack {
+        ZStack {
+            NavigationView {
                 if viewModel.suggestedHabits.isEmpty {
                     ObjectiveInputView(viewModel: viewModel)
+                        .navigationTitle("Personalização")
                 } else {
                     HabitSuggestionView(viewModel: viewModel)
+                        .navigationTitle("Sugestões para você")
                 }
             }
-            .navigationTitle("Personalização")
+            
+            if viewModel.isLoading {
+                Color.black.opacity(0.4).edgesIgnoringSafeArea(.all)
+                ProgressView("Analisando seu objetivo...")
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .foregroundColor(.white)
+                    .scaleEffect(1.5)
+            }
         }
     }
 }
@@ -27,18 +43,16 @@ struct ObjectiveInputView: View {
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
             
-            TextField("Ex: Dormir melhor, reduzir o estresse...", text: $objective)
+            TextField("Ex: dormir melhor, reduzir o estresse...", text: $objective)
                 .textFieldStyle(.roundedBorder)
+                .padding(.horizontal)
             
-            Button("Obter Sugestões") {
+            Button("Obter sugestões com IA") {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 viewModel.fetchSuggestions(for: objective)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(objective.isEmpty || viewModel.isLoading)
-            
-            if viewModel.isLoading {
-                ProgressView()
-            }
+            .disabled(objective.isEmpty)
         }
         .padding()
     }
@@ -50,19 +64,41 @@ struct HabitSuggestionView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Aqui estão 3 hábitos para começar:")
-                .font(.title2.bold())
+            Text("Com base no seu objetivo, sugerimos começar com estes 3 hábitos:")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
             
-            ForEach(viewModel.suggestedHabits, id: \.name) { habit in
-                HabitRow(habit: Habit(id: 0, userId: 0, name: habit.name, icon: habit.icon, isCompleted: false, date: ""))
+            ForEach(viewModel.suggestedHabits) { habit in
+                SuggestionRow(habit: habit)
             }
+            
+            Spacer()
             
             Button("Adicionar à minha rotina") {
                 viewModel.addSuggestedHabits()
                 hasCompletedOnboarding = true
             }
             .buttonStyle(.borderedProminent)
+            .padding(.bottom)
         }
         .padding()
+    }
+}
+
+struct SuggestionRow: View {
+    let habit: HabitSuggestion
+
+    var body: some View {
+        HStack {
+            Image(systemName: habit.icon)
+                .font(.title2).frame(width: 40)
+                .foregroundColor(.accentColor)
+            Text(habit.name).font(.headline)
+            Spacer()
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(16)
     }
 }
