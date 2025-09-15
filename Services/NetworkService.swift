@@ -1,6 +1,20 @@
 import Foundation
 
-// MARK: Models
+// MARK: - Models
+
+struct JournalEntry: Codable, Identifiable {
+    let id: Int
+    let userId: Int
+    let date: Date
+    let mood: String
+    let text: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, userId, date, mood
+        case text = "content"
+    }
+}
+
 struct HabitStatus: Codable, Identifiable {
     let id: Int
     let userId: Int
@@ -55,6 +69,19 @@ struct ChatMessagePayload: Codable {
     let content: String
 }
 
+struct JournalEntryPayload: Codable {
+    let mood: String
+    let content: String?
+    let date: String
+}
+
+struct JournalEntryResponse: Codable {
+    let id: Int
+    let userId: Int
+    let date: String
+    let mood: String
+    let content: String?
+}
 
 // MARK: - Network Service
 class NetworkService {
@@ -75,7 +102,7 @@ class NetworkService {
         let email: String
     }
     
-    // MARK: - Funções de Usuário e Autenticação
+    // MARK: - Funções de usuário e autenticação
     
     func login(name: String, email: String, completion: @escaping (Result<User, Error>) -> Void) {
         let url = baseURL.appendingPathComponent("/users/login")
@@ -149,9 +176,8 @@ class NetworkService {
         }.resume()
     }
     
-    // MARK: - Funções de Hábitos (Refatoradas)
-
-    /// ATUALIZADA: Inverte o estado de conclusão de um hábito para uma data específica.
+    // MARK: - Funções de hábitos
+    
     func toggleHabitCompletion(habitId: Int, dateString: String, completion: @escaping (Result<Void, Error>) -> Void) {
         var urlComponents = URLComponents(url: baseURL.appendingPathComponent("/habits/\(habitId)/toggle"), resolvingAgainstBaseURL: true)!
         urlComponents.queryItems = [
@@ -220,7 +246,7 @@ class NetworkService {
         }.resume()
     }
     
-    // MARK: - Funções de IA e Dashboard
+    // MARK: - Funções de IA e dashboard
     
     func fetchDashboardData(userId: Int, date: Date, completion: @escaping (Result<DashboardDataResponse, Error>) -> Void) {
         let dateFormatter = DateFormatter()
@@ -304,5 +330,80 @@ class NetworkService {
             }
         }.resume()
     }
-}
+    
+    // MARK: - Funções de diário
+    
+    func saveJournalEntry(userId: Int, mood: String, content: String?, date: Date, completion: @escaping (Result<JournalEntryResponse, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/users/\(userId)/journal")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        let payload = JournalEntryPayload(mood: mood, content: content, date: dateString)
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(payload)
+        } catch {
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                do {
+                    let decoder = self.createDecoder()
+                    let journalEntry = try decoder.decode(JournalEntryResponse.self, from: data)
+                    completion(.success(journalEntry))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+    
+    func fetchJournalEntries(userId: Int, completion: @escaping (Result<[JournalEntry], Error>) -> Void) {
+        let url = self.baseURL.appendingPathComponent("/journal_entries/\(userId)")
 
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+
+                do {
+                    let decoder = self.createDecoder()
+                    let dateFormatter = DateFormatter()
+                    
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    
+                    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+                    dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+                    decoder.dateDecodingStrategy = .formatted(dateFormatter)
+
+                    let entries = try decoder.decode([JournalEntry].self, from: data)
+                    completion(.success(entries))
+                } catch {
+                    print("DEBUG: Erro ao decodificar Journal Entries: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+}

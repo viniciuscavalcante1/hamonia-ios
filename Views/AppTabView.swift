@@ -14,6 +14,10 @@ struct AppTabView: View {
                 .tabItem {
                     Label("Dashboard", systemImage: "square.grid.2x2.fill")
                 }
+            MentalWellnessView()
+                .tabItem {
+                    Label("Mente", systemImage: "brain.head.profile")
+                }
             CoachView()
                 .tabItem {
                     Label("Coach", systemImage: "sparkles")
