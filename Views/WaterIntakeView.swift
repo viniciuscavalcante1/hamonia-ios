@@ -8,11 +8,36 @@
 import SwiftUI
 
 struct WaterIntakeView: View {
+    @StateObject private var viewModel = WaterIntakeViewModel()
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: 30) {
+            Text("Hidratação diária")
+                .font(.title2).bold()
+
+            ProgressView(value: viewModel.waterConsumed, total: viewModel.dailyGoal) {
+                Text("Meta: \(Int(viewModel.dailyGoal)) ml")
+            }
+            .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+            .padding(.horizontal)
+            
+            Text("\(Int(viewModel.waterConsumed)) ml")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            HStack(spacing: 20) {
+                Button("Copo (250ml)") { viewModel.addWater(amount: 250) }
+                Button("Garrafa (500ml)") { viewModel.addWater(amount: 500) }
+            }
+            .buttonStyle(.bordered)
+        }
+        .navigationTitle("Hidratação")
+        .padding()
     }
 }
 
-#Preview {
-    WaterIntakeView()
+struct WaterIntakeView_Previews: PreviewProvider {
+    static var previews: some View {
+        WaterIntakeView()
+    }
 }

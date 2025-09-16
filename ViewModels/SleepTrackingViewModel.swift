@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+class SleepTrackingViewModel: ObservableObject {
+    @Published var sleepData: String = "7h 15min"
+}

@@ -8,11 +8,32 @@
 import SwiftUI
 
 struct ActivityTypeSelectionView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @Environment(\.dismiss) var dismiss
+    var onSelectActivity: (ActivityType) -> Void
 
-#Preview {
-    ActivityTypeSelectionView()
+    var body: some View {
+        NavigationStack {
+            List(ActivityType.allCases) { activityType in
+                Button(action: {
+                    onSelectActivity(activityType)
+                    dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: activityType.icon)
+                            .font(.title)
+                            .frame(width: 50)
+                        Text(activityType.displayName)
+                        Spacer()
+                    }
+                }
+                .foregroundColor(.primary)
+            }
+            .navigationTitle("Escolha a atividade")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancelar") { dismiss() }
+                }
+            }
+        }
+    }
 }

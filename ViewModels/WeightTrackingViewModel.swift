@@ -6,3 +6,17 @@
 //
 
 import Foundation
+
+class WeightTrackingViewModel: ObservableObject {
+    @Published var currentWeight: Double = 75.5
+    @Published var weightInput: String = ""
+    
+    func saveNewWeight() {
+        guard let newWeight = Double(weightInput.replacingOccurrences(of: ",", with: ".")) else {
+            return
+        }
+        
+        currentWeight = newWeight
+        weightInput = ""
+    }
+}

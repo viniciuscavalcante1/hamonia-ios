@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		985792BB2E785C9200A896A9 /* WeightTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792BA2E785C9200A896A9 /* WeightTrackingViewModel.swift */; };
+		985792BD2E785CA800A896A9 /* WeightTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792BC2E785CA800A896A9 /* WeightTrackingView.swift */; };
+		985792C22E78931800A896A9 /* LiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792C12E78931800A896A9 /* LiveActivityView.swift */; };
+		985792C42E78932D00A896A9 /* ActivityTypeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792C32E78932D00A896A9 /* ActivityTypeSelectionView.swift */; };
+		985792C62E78934200A896A9 /* ManualEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792C52E78934200A896A9 /* ManualEntryView.swift */; };
+		985792CA2E78E0DA00A896A9 /* MetricCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985792C92E78E0DA00A896A9 /* MetricCardView.swift */; };
 		98755C6F2E659C2B00AD8CA4 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98755C6E2E659C2B00AD8CA4 /* ProfileView.swift */; };
 		98755C712E659C4C00AD8CA4 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98755C702E659C4C00AD8CA4 /* ProfileViewModel.swift */; };
 		98755C732E65A53800AD8CA4 /* CoachViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98755C722E65A53800AD8CA4 /* CoachViewModel.swift */; };
@@ -29,9 +35,25 @@
 		9878E4D82E725A7B00BD10C6 /* MentalWellnessViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4D72E725A7B00BD10C6 /* MentalWellnessViewModel.swift */; };
 		9878E4DA2E725D5400BD10C6 /* MentalWellnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4D92E725D5400BD10C6 /* MentalWellnessView.swift */; };
 		9878E4DC2E73252500BD10C6 /* JournalHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4DB2E73252500BD10C6 /* JournalHistoryView.swift */; };
+		9878E4DE2E77A29600BD10C6 /* BodyDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4DD2E77A29600BD10C6 /* BodyDashboardViewModel.swift */; };
+		9878E4E02E77A2B100BD10C6 /* PhysicalActivityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4DF2E77A2B100BD10C6 /* PhysicalActivityViewModel.swift */; };
+		9878E4E22E77A2CB00BD10C6 /* BodyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4E12E77A2CB00BD10C6 /* BodyDashboardView.swift */; };
+		9878E4E42E77A2E100BD10C6 /* PhysicalActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4E32E77A2E100BD10C6 /* PhysicalActivityView.swift */; };
+		9878E4E62E77A37C00BD10C6 /* NutritionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4E52E77A37C00BD10C6 /* NutritionViewModel.swift */; };
+		9878E4E82E77A39800BD10C6 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4E72E77A39800BD10C6 /* NutritionView.swift */; };
+		9878E4EA2E77A3AF00BD10C6 /* WaterIntakeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4E92E77A3AF00BD10C6 /* WaterIntakeViewModel.swift */; };
+		9878E4EC2E77A3C100BD10C6 /* WaterIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4EB2E77A3C100BD10C6 /* WaterIntakeView.swift */; };
+		9878E4EE2E77A3D100BD10C6 /* SleepTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4ED2E77A3D100BD10C6 /* SleepTrackingViewModel.swift */; };
+		9878E4F02E77A40100BD10C6 /* SleepTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9878E4EF2E77A40100BD10C6 /* SleepTrackingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		985792BA2E785C9200A896A9 /* WeightTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightTrackingViewModel.swift; sourceTree = "<group>"; };
+		985792BC2E785CA800A896A9 /* WeightTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightTrackingView.swift; sourceTree = "<group>"; };
+		985792C12E78931800A896A9 /* LiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityView.swift; sourceTree = "<group>"; };
+		985792C32E78932D00A896A9 /* ActivityTypeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTypeSelectionView.swift; sourceTree = "<group>"; };
+		985792C52E78934200A896A9 /* ManualEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualEntryView.swift; sourceTree = "<group>"; };
+		985792C92E78E0DA00A896A9 /* MetricCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCardView.swift; sourceTree = "<group>"; };
 		98755C6E2E659C2B00AD8CA4 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		98755C702E659C4C00AD8CA4 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		98755C722E65A53800AD8CA4 /* CoachViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachViewModel.swift; sourceTree = "<group>"; };
@@ -56,7 +78,25 @@
 		9878E4D72E725A7B00BD10C6 /* MentalWellnessViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentalWellnessViewModel.swift; sourceTree = "<group>"; };
 		9878E4D92E725D5400BD10C6 /* MentalWellnessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentalWellnessView.swift; sourceTree = "<group>"; };
 		9878E4DB2E73252500BD10C6 /* JournalHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalHistoryView.swift; sourceTree = "<group>"; };
+		9878E4DD2E77A29600BD10C6 /* BodyDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDashboardViewModel.swift; sourceTree = "<group>"; };
+		9878E4DF2E77A2B100BD10C6 /* PhysicalActivityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalActivityViewModel.swift; sourceTree = "<group>"; };
+		9878E4E12E77A2CB00BD10C6 /* BodyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDashboardView.swift; sourceTree = "<group>"; };
+		9878E4E32E77A2E100BD10C6 /* PhysicalActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicalActivityView.swift; sourceTree = "<group>"; };
+		9878E4E52E77A37C00BD10C6 /* NutritionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionViewModel.swift; sourceTree = "<group>"; };
+		9878E4E72E77A39800BD10C6 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
+		9878E4E92E77A3AF00BD10C6 /* WaterIntakeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeViewModel.swift; sourceTree = "<group>"; };
+		9878E4EB2E77A3C100BD10C6 /* WaterIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterIntakeView.swift; sourceTree = "<group>"; };
+		9878E4ED2E77A3D100BD10C6 /* SleepTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTrackingViewModel.swift; sourceTree = "<group>"; };
+		9878E4EF2E77A40100BD10C6 /* SleepTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepTrackingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		985792C02E7892B100A896A9 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		9876B0D42E63B86000DA9703 /* Frameworks */ = {
@@ -72,6 +112,7 @@
 		9876B0CE2E63B86000DA9703 = {
 			isa = PBXGroup;
 			children = (
+				985792C02E7892B100A896A9 /* Models */,
 				9876B0F92E650F6E00DA9703 /* Harmonia.entitlements */,
 				9876B0E92E63B8C700DA9703 /* Services */,
 				9876B0E82E63B8BB00DA9703 /* ViewModels */,
@@ -106,6 +147,16 @@
 				9878E4D52E6D035900BD10C6 /* HabitDetailView.swift */,
 				9878E4D92E725D5400BD10C6 /* MentalWellnessView.swift */,
 				9878E4DB2E73252500BD10C6 /* JournalHistoryView.swift */,
+				9878E4E12E77A2CB00BD10C6 /* BodyDashboardView.swift */,
+				9878E4E32E77A2E100BD10C6 /* PhysicalActivityView.swift */,
+				9878E4E72E77A39800BD10C6 /* NutritionView.swift */,
+				9878E4EB2E77A3C100BD10C6 /* WaterIntakeView.swift */,
+				9878E4EF2E77A40100BD10C6 /* SleepTrackingView.swift */,
+				985792BC2E785CA800A896A9 /* WeightTrackingView.swift */,
+				985792C12E78931800A896A9 /* LiveActivityView.swift */,
+				985792C32E78932D00A896A9 /* ActivityTypeSelectionView.swift */,
+				985792C52E78934200A896A9 /* ManualEntryView.swift */,
+				985792C92E78E0DA00A896A9 /* MetricCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -119,6 +170,12 @@
 				9878E4D02E6CE96D00BD10C6 /* OnboardingViewModel.swift */,
 				9878E4D32E6D030000BD10C6 /* HabitDetailViewModel.swift */,
 				9878E4D72E725A7B00BD10C6 /* MentalWellnessViewModel.swift */,
+				9878E4DD2E77A29600BD10C6 /* BodyDashboardViewModel.swift */,
+				9878E4DF2E77A2B100BD10C6 /* PhysicalActivityViewModel.swift */,
+				9878E4E52E77A37C00BD10C6 /* NutritionViewModel.swift */,
+				9878E4E92E77A3AF00BD10C6 /* WaterIntakeViewModel.swift */,
+				9878E4ED2E77A3D100BD10C6 /* SleepTrackingViewModel.swift */,
+				985792BA2E785C9200A896A9 /* WeightTrackingViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -145,6 +202,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				985792C02E7892B100A896A9 /* Models */,
 			);
 			name = Harmonia;
 			packageProductDependencies = (
@@ -206,24 +266,40 @@
 			files = (
 				9878E4D82E725A7B00BD10C6 /* MentalWellnessViewModel.swift in Sources */,
 				9876B0ED2E63BA7B00DA9703 /* AppTabView.swift in Sources */,
+				9878E4EA2E77A3AF00BD10C6 /* WaterIntakeViewModel.swift in Sources */,
+				9878E4E02E77A2B100BD10C6 /* PhysicalActivityViewModel.swift in Sources */,
+				985792BB2E785C9200A896A9 /* WeightTrackingViewModel.swift in Sources */,
+				9878E4E22E77A2CB00BD10C6 /* BodyDashboardView.swift in Sources */,
 				9878E4DA2E725D5400BD10C6 /* MentalWellnessView.swift in Sources */,
+				985792C62E78934200A896A9 /* ManualEntryView.swift in Sources */,
 				98755C732E65A53800AD8CA4 /* CoachViewModel.swift in Sources */,
 				9876B0DD2E63B86000DA9703 /* ContentView.swift in Sources */,
+				985792BD2E785CA800A896A9 /* WeightTrackingView.swift in Sources */,
+				985792CA2E78E0DA00A896A9 /* MetricCardView.swift in Sources */,
 				98755C6F2E659C2B00AD8CA4 /* ProfileView.swift in Sources */,
 				9876B0F12E63BABD00DA9703 /* DashboardView.swift in Sources */,
 				9878E4D62E6D035900BD10C6 /* HabitDetailView.swift in Sources */,
 				9876B0F82E65012F00DA9703 /* DashboardViewModel.swift in Sources */,
+				9878E4EE2E77A3D100BD10C6 /* SleepTrackingViewModel.swift in Sources */,
 				9876B0EF2E63BAA200DA9703 /* LoginView.swift in Sources */,
 				98755C752E65BBC900AD8CA4 /* AddHabitView.swift in Sources */,
 				9876B0DB2E63B86000DA9703 /* HarmoniaApp.swift in Sources */,
 				98755C712E659C4C00AD8CA4 /* ProfileViewModel.swift in Sources */,
 				9878E4D12E6CE96D00BD10C6 /* OnboardingViewModel.swift in Sources */,
 				9876B0F32E63BACB00DA9703 /* CoachView.swift in Sources */,
+				9878E4F02E77A40100BD10C6 /* SleepTrackingView.swift in Sources */,
+				9878E4DE2E77A29600BD10C6 /* BodyDashboardViewModel.swift in Sources */,
+				9878E4E62E77A37C00BD10C6 /* NutritionViewModel.swift in Sources */,
+				985792C42E78932D00A896A9 /* ActivityTypeSelectionView.swift in Sources */,
+				985792C22E78931800A896A9 /* LiveActivityView.swift in Sources */,
+				9878E4E42E77A2E100BD10C6 /* PhysicalActivityView.swift in Sources */,
 				9878E4DC2E73252500BD10C6 /* JournalHistoryView.swift in Sources */,
 				9878E4D42E6D030000BD10C6 /* HabitDetailViewModel.swift in Sources */,
 				9876B0F42E63BC5C00DA9703 /* NetworkService.swift in Sources */,
 				9876B0F62E64FA2000DA9703 /* SplashScreenView.swift in Sources */,
 				9878E4CE2E6CE8EF00BD10C6 /* OnboardingView.swift in Sources */,
+				9878E4EC2E77A3C100BD10C6 /* WaterIntakeView.swift in Sources */,
+				9878E4E82E77A39800BD10C6 /* NutritionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

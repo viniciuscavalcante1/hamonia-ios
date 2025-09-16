@@ -8,11 +8,33 @@
 import SwiftUI
 
 struct LiveActivityView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @ObservedObject var viewModel: PhysicalActivityViewModel
 
-#Preview {
-    LiveActivityView()
+    var body: some View {
+        VStack(spacing: 40) {
+            if let type = viewModel.selectedActivityType {
+                Text(type.rawValue)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+            }
+            
+            Text(viewModel.formatTime(viewModel.elapsedTime))
+                .font(.system(size: 70, weight: .regular, design: .monospaced))
+                
+            Button(action: {
+                viewModel.stopActivity()
+            }) {
+                Text("Parar e salvar")
+                    .font(.title2)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(15)
+                    .padding(.horizontal)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemGroupedBackground))
+    }
 }

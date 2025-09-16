@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct SleepTrackingView: View {
+    @StateObject private var viewModel = SleepTrackingViewModel()
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: 20) {
+            Text("Duração do sono (última noite)")
+                .font(.headline)
+            
+            Text(viewModel.sleepData)
+                .font(.largeTitle)
+                .fontWeight(.bold)
+        }
+        .navigationTitle("Sono")
     }
 }
 
-#Preview {
-    SleepTrackingView()
+struct SleepTrackingView_Previews: PreviewProvider {
+    static var previews: some View {
+        SleepTrackingView()
+    }
 }

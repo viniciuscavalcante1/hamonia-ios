@@ -83,6 +83,15 @@ struct JournalEntryResponse: Codable {
     let content: String?
 }
 
+struct ActivityRequest: Codable {
+    let activity_type: String
+    let duration: TimeInterval
+    let distance: Double?
+    let date: Date
+    let owner_id: Int
+}
+
+
 // MARK: - Network Service
 class NetworkService {
     
@@ -94,9 +103,36 @@ class NetworkService {
     private func createDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        
+        // Decodificador para lidar com as datas
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        })
+        
         return decoder
     }
-    
+
+    private func createEncoder() -> JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }
+
     private struct LoginRequest: Codable {
         let name: String
         let email: String
@@ -172,6 +208,88 @@ class NetworkService {
                 } catch {
                     print("Erro em updateUserGoal(): \(error)"); completion(.failure(error))
                 }
+            }
+        }.resume()
+    }
+    
+    // MARK: Atividades
+    
+    func fetchActivities(for userId: Int, completion: @escaping (Result<[Activity], Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/users/\(userId)/activities/")
+        
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                do {
+                    let activities = try self.createDecoder().decode([Activity].self, from: data)
+                    completion(.success(activities))
+                } catch {
+                    print("Erro ao decodificar atividades: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    func saveActivity(_ activity: Activity, for userId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/activities/")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let payload = ActivityRequest(
+            activity_type: activity.activityType.rawValue,
+            duration: activity.duration,
+            distance: activity.distance,
+            date: activity.date,
+            owner_id: userId
+        )
+
+        do {
+            let encoder = createEncoder()
+            let data = try encoder.encode(payload)
+            request.httpBody = data
+            
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("JSON para API:")
+                print(jsonString)
+            }
+
+        } catch {
+            print("Erro ao codificar o JSON: \(error)")
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                
+                if !(200...299).contains(httpResponse.statusCode) {
+                    if let data = data, let errorString = String(data: data, encoding: .utf8) {
+                        print("Erro recebido do backend \(httpResponse.statusCode)):")
+                        print(errorString)
+                    }
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                
+                completion(.success(()))
             }
         }.resume()
     }
@@ -390,9 +508,7 @@ class NetworkService {
                 do {
                     let decoder = self.createDecoder()
                     let dateFormatter = DateFormatter()
-                    
                     dateFormatter.dateFormat = "yyyy-MM-dd"
-                    
                     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
                     dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
                     decoder.dateDecodingStrategy = .formatted(dateFormatter)

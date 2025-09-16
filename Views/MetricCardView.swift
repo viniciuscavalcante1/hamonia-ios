@@ -1,18 +1,39 @@
-//
-//  MetricCardView.swift
-//  Harmonia
-//
-//  Created by Vinícius Cavalcante on 15/09/2025.
-//
-
 import SwiftUI
 
 struct MetricCardView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    let icon: String
+    let title: String
+    let value: String
+    let color: Color
 
-#Preview {
-    MetricCardView()
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundColor(color)
+                
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption.bold())
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer(minLength: 10)
+            
+            Text(value)
+                .font(.system(.title, design: .rounded).bold())
+                .foregroundColor(color)
+        }
+        .frame(height: 120)
+        .padding()
+        .background(color.opacity(0.15))
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+    }
 }

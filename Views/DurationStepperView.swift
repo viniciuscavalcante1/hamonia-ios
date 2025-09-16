@@ -1,18 +1,26 @@
-//
-//  DurationStepperView.swift
-//  Harmonia
-//
-//  Created by Vinícius Cavalcante on 15/09/2025.
-//
+// Views/DurationStepperView.swift
 
 import SwiftUI
 
 struct DurationStepperView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    let label: String
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    let step: Int
 
-#Preview {
-    DurationStepperView()
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.headline)
+                .frame(width: 70, alignment: .leading)
+            
+            Text("\(value)")
+                .font(.title2.monospacedDigit())
+                .fontWeight(.semibold)
+                .frame(width: 50)
+
+            Stepper(label, value: $value, in: range, step: step)
+                .labelsHidden()
+        }
+    }
 }
