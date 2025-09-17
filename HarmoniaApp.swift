@@ -5,13 +5,6 @@
 //  Created by Vinícius Cavalcante on 30/08/2025.
 //
 
-//
-//  HarmoniaApp.swift
-//  Harmonia
-//
-//  Created by Vinícius Cavalcante on 30/08/2025.
-//
-
 import SwiftUI
 
 @main

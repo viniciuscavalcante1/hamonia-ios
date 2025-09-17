@@ -1,5 +1,3 @@
-// Views/BodyDashboardView.swift
-
 import SwiftUI
 
 struct BodyDashboardView: View {
@@ -19,7 +17,7 @@ struct BodyDashboardView: View {
                         )
                     }
 
-                    NavigationLink(destination: Text("Tela de nutrição")) {
+                    NavigationLink(destination: NutritionView()) {
                         MetricCardView(
                             icon: "leaf.circle.fill",
                             title: "Nutrição",

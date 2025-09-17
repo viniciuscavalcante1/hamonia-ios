@@ -96,6 +96,11 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		985792D12E78F61900A896A9 /* Helpers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +117,7 @@
 		9876B0CE2E63B86000DA9703 = {
 			isa = PBXGroup;
 			children = (
+				985792D12E78F61900A896A9 /* Helpers */,
 				985792C02E7892B100A896A9 /* Models */,
 				9876B0F92E650F6E00DA9703 /* Harmonia.entitlements */,
 				9876B0E92E63B8C700DA9703 /* Services */,
@@ -205,6 +211,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				985792C02E7892B100A896A9 /* Models */,
+				985792D12E78F61900A896A9 /* Helpers */,
 			);
 			name = Harmonia;
 			packageProductDependencies = (
