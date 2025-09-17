@@ -4,6 +4,44 @@ import UIKit
 
 // MARK: - Models
 
+enum SleepQuality: String, Codable, CaseIterable, Identifiable {
+    case ruim = "Ruim"
+    case ok = "Ok"
+    case bom = "Bom"
+    
+    var id: String { self.rawValue }
+}
+
+struct SleepLog: Codable, Identifiable {
+    let id: Int
+    let userId: Int
+    let startTime: Date
+    let endTime: Date
+    let durationMinutes: Int
+    let quality: SleepQuality?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, quality
+        case userId = "user_id"
+        case startTime = "start_time"
+        case endTime = "end_time"
+        case durationMinutes = "duration_minutes"
+    }
+}
+
+struct SleepLogCreate: Codable {
+    let startTime: Date
+    let endTime: Date
+    let quality: SleepQuality?
+    
+    enum CodingKeys: String, CodingKey {
+        case quality
+        case startTime = "start_time"
+        case endTime = "end_time"
+    }
+}
+
+
 struct WaterLog: Codable, Identifiable {
     let id: Int
     let userId: Int
@@ -797,6 +835,67 @@ class NetworkService {
                     completion(.success(()))
                 } else {
                     completion(.failure(URLError(.badServerResponse)))
+                }
+            }
+        }.resume()
+    }
+    
+    func addSleepLog(userId: Int, log: SleepLogCreate, completion: @escaping (Result<SleepLog, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/users/\(userId)/sleep")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            request.httpBody = try createEncoder().encode(log)
+        } catch {
+            completion(.failure(error))
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                do {
+                    let newLog = try self.createDecoder().decode(SleepLog.self, from: data)
+                    completion(.success(newLog))
+                } catch {
+                    print("eRRO: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    func fetchSleepLogs(userId: Int, limit: Int = 30, completion: @escaping (Result<[SleepLog], Error>) -> Void) {
+        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("/users/\(userId)/sleep"), resolvingAgainstBaseURL: true)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "limit", value: String(limit))
+        ]
+
+        URLSession.shared.dataTask(with: urlComponents.url!) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                do {
+                    let logs = try self.createDecoder().decode([SleepLog].self, from: data)
+                    completion(.success(logs))
+                } catch {
+                    print("Erro: \(error)")
+                    completion(.failure(error))
                 }
             }
         }.resume()

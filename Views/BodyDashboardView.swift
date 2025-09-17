@@ -35,7 +35,7 @@ struct BodyDashboardView: View {
                         )
                     }
 
-                    NavigationLink(destination: Text("Tela de sono")) {
+                    NavigationLink(destination: SleepTrackingView()) {
                         MetricCardView(
                             icon: "moon.circle.fill",
                             title: "Sono",
