@@ -9,35 +9,111 @@ import SwiftUI
 
 struct WaterIntakeView: View {
     @StateObject private var viewModel = WaterIntakeViewModel()
-
+    
     var body: some View {
-        VStack(spacing: 30) {
-            Text("Hidratação diária")
-                .font(.title2).bold()
-
-            ProgressView(value: viewModel.waterConsumed, total: viewModel.dailyGoal) {
-                Text("Meta: \(Int(viewModel.dailyGoal)) ml")
+        List {
+            Section {
+                VStack(spacing: 16) {
+                    ProgressView(value: Double(viewModel.totalIntakeToday), total: Double(viewModel.dailyGoal)) {
+                        Text("Progresso diário")
+                            .font(.headline)
+                    } currentValueLabel: {
+                        Text("\(viewModel.totalIntakeToday) / \(viewModel.dailyGoal) ml")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .tint(.appBlue)
+                    .controlSize(.large)
+                    
+                    Text("Meta: Beber \(viewModel.dailyGoal / 1000) litros por dia!")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical)
             }
-            .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-            .padding(.horizontal)
             
-            Text("\(Int(viewModel.waterConsumed)) ml")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            HStack(spacing: 20) {
-                Button("Copo (250ml)") { viewModel.addWater(amount: 250) }
-                Button("Garrafa (500ml)") { viewModel.addWater(amount: 500) }
+            // Seção de Ações Rápidas
+            Section(header: Text("Adicionar Consumo")) {
+                HStack {
+                    Spacer()
+                    QuickAddButton(amount: 250, viewModel: viewModel)
+                    Spacer()
+                    QuickAddButton(amount: 500, viewModel: viewModel)
+                    Spacer()
+                    QuickAddButton(amount: 750, viewModel: viewModel)
+                    Spacer()
+                }
+                .buttonStyle(.bordered)
             }
-            .buttonStyle(.bordered)
+            
+            Section(header: Text("Registros de hoje")) {
+                if viewModel.isLoading && viewModel.waterLogs.isEmpty {
+                    ProgressView()
+                } else if viewModel.waterLogs.isEmpty {
+                    ContentUnavailableView("Nenhum registro ainda", systemImage: "drop.fill")
+                } else {
+                    ForEach(viewModel.waterLogs) { log in
+                        HStack {
+                            Image(systemName: "drop.fill")
+                                .foregroundStyle(.appBlue)
+                            Text("\(log.amountMl) ml")
+                            Spacer()
+                            Text(log.logDate, style: .time)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteLog)
+                }
+            }
         }
         .navigationTitle("Hidratação")
-        .padding()
+        .refreshable {
+            viewModel.fetchLogsForToday()
+        }
+        .onAppear {
+            if viewModel.waterLogs.isEmpty {
+                viewModel.fetchLogsForToday()
+            }
+        }
     }
 }
 
+struct QuickAddButton: View {
+    let amount: Int
+    @ObservedObject var viewModel: WaterIntakeViewModel
+    
+    private func iconName(for amount: Int) -> String {
+        switch amount {
+        case 250:
+            return "cup.and.saucer.fill"
+        case 500:
+            return "mug.fill"
+        default:
+            return "takeoutbag.and.cup.and.straw.fill"
+        }
+    }
+    
+    var body: some View {
+        Button(action: {
+            viewModel.addWater(amount: amount)
+        }) {
+            VStack {
+                Image(systemName: iconName(for: amount))
+                    .font(.title2)
+                Text("\(amount) ml")
+                    .font(.caption)
+            }
+        }
+        .tint(.appBlue)
+    }
+}
+
+
 struct WaterIntakeView_Previews: PreviewProvider {
     static var previews: some View {
-        WaterIntakeView()
+        NavigationStack {
+            WaterIntakeView()
+        }
     }
 }

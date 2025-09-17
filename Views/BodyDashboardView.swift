@@ -26,7 +26,7 @@ struct BodyDashboardView: View {
                         )
                     }
 
-                    NavigationLink(destination: Text("Tela de hidratação")) {
+                    NavigationLink(destination: WaterIntakeView()) {
                         MetricCardView(
                             icon: "drop.circle.fill",
                             title: "Hidratação",

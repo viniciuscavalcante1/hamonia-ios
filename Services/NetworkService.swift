@@ -4,10 +4,39 @@ import UIKit
 
 // MARK: - Models
 
+struct WaterLog: Codable, Identifiable {
+    let id: Int
+    let userId: Int
+    let amountMl: Int
+    let logDate: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+        case amountMl = "amount_ml"
+        case logDate = "log_date"
+    }
+}
+
+struct WaterLogCreate: Codable {
+    let amountMl: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case amountMl = "amount_ml"
+    }
+
+}
+
 struct NutritionAnalysisResponse: Codable {
     let foods: [FoodItem]
     let insights: String
     let totalCalories: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case totalCalories = "total_calories"
+        case foods
+        case insights
+    }
 }
 
 struct FoodItem: Codable, Identifiable {
@@ -19,11 +48,8 @@ struct FoodItem: Codable, Identifiable {
     let fat: Double
     
     enum CodingKeys: String, CodingKey {
-        case foodName
-        case calories
-        case protein
-        case carbs
-        case fat
+        case calories, protein, carbs, fat
+        case foodName = "food_name"
     }
 }
 
@@ -36,6 +62,18 @@ struct NutritionLogCreate: Codable {
     let totalFat: Double
     let insights: String?
     let items: [FoodItem]
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case logDate = "log_date"
+        case totalCalories = "total_calories"
+        case totalProtein = "total_protein"
+        case totalCarbs = "total_carbs"
+        case totalFat = "total_fat"
+        case insights
+        case items
+    }
+
 }
     
 struct JournalEntry: Codable, Identifiable {
@@ -46,7 +84,8 @@ struct JournalEntry: Codable, Identifiable {
     let text: String
 
     enum CodingKeys: String, CodingKey {
-        case id, userId, date, mood
+        case id, date, mood
+        case userId = "user_id"
         case text = "content"
     }
 }
@@ -57,11 +96,23 @@ struct HabitStatus: Codable, Identifiable {
     let name: String
     let icon: String
     var isCompleted: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, icon
+        case userId = "user_id"
+        case isCompleted = "is_completed"
+    }
+
 }
 
 struct HabitHistoryResponse: Codable {
     let currentStreak: Int
     let completedDates: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case currentStreak = "current_streak"
+        case completedDates = "completed_dates"
+    }
 }
 
 struct HabitSuggestion: Codable, Identifiable {
@@ -86,6 +137,14 @@ struct DashboardDataResponse: Codable {
     let sleep: SleepData
     let dailyInsight: String
     let habits: [HabitStatus]
+    
+    enum CodingKeys: String, CodingKey {
+        case userName = "user_name"
+        case activity, sleep
+        case dailyInsight = "daily_insight"
+        case habits
+    }
+
 }
 
 struct ActivityData: Codable {
@@ -117,6 +176,11 @@ struct JournalEntryResponse: Codable {
     let date: String
     let mood: String
     let content: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, date, mood, content
+        case userId = "user_id"
+    }
 }
 
 struct ActivityRequest: Codable {
@@ -125,6 +189,10 @@ struct ActivityRequest: Codable {
     let distance: Double?
     let date: Date
     let owner_id: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case activity_type, duration, distance, date, owner_id
+    }
 }
 
 
@@ -143,9 +211,6 @@ class NetworkService {
     
     private func createDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        
-        // Decodificador para lidar com as datas
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -154,15 +219,21 @@ class NetworkService {
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
             
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-            if let date = formatter.date(from: dateString) {
-                return date
+            let formats = [
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
+                "yyyy-MM-dd'T'HH:mm:ssZ",
+                "yyyy-MM-dd'T'HH:mm:ss"
+            ]
+            
+            for format in formats {
+                formatter.dateFormat = format
+                if let date = formatter.date(from: dateString) {
+                    return date
+                }
             }
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-            if let date = formatter.date(from: dateString) {
-                return date
-            }
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Não foi possível decodificar a data: \(dateString)")
         })
         
         return decoder
@@ -420,16 +491,24 @@ class NetworkService {
             DispatchQueue.main.async {
                 if let error = error { completion(.failure(error)); return }
                 guard let data = data else { completion(.failure(URLError(.badServerResponse))); return }
+                
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("\n--- RESPOSTA JSON ---")
+                    print(jsonString)
+                    print("----------------------------------\n")
+                }
+
                 do {
                     let dashboardResponse = try self.createDecoder().decode(DashboardDataResponse.self, from: data)
                     completion(.success(dashboardResponse))
                 } catch {
+                    print("Erro: \(error)\n")
                     completion(.failure(error))
                 }
             }
         }.resume()
     }
-    
+
     func askCoach(currentMessage: String, history: [ChatMessagePayload], userId: Int, completion: @escaping (Result<String, Error>) -> Void) {
         let url = baseURL.appendingPathComponent("/coach/ask")
         var request = URLRequest(url: url)
@@ -629,6 +708,92 @@ class NetworkService {
                 }
                 
                 if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+                    completion(.success(()))
+                } else {
+                    completion(.failure(URLError(.badServerResponse)))
+                }
+            }
+        }.resume()
+    }
+    
+    func addWaterLog(userId: Int, amount: Int, completion: @escaping (Result<WaterLog, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/users/\(userId)/water")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let payload = WaterLogCreate(amountMl: amount)
+        do {
+            request.httpBody = try createEncoder().encode(payload)
+        } catch {
+            completion(.failure(error)); return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error { completion(.failure(error)); return }
+                guard let data = data else { completion(.failure(URLError(.badServerResponse))); return }
+                
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("\n--- RESPOSTA JSON ---")
+                    print(jsonString)
+                    print("---------------------------------------\n")
+                }
+                
+                do {
+                    let newLog = try self.createDecoder().decode(WaterLog.self, from: data)
+                    completion(.success(newLog))
+                } catch {
+                    print("Erro: \(error)\n")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    func fetchWaterLogs(userId: Int, date: Date, completion: @escaping (Result<[WaterLog], Error>) -> Void) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+
+        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("/users/\(userId)/water"), resolvingAgainstBaseURL: true)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "log_date", value: dateString)
+        ]
+
+        URLSession.shared.dataTask(with: urlComponents.url!) { data, _, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                do {
+                    let logs = try self.createDecoder().decode([WaterLog].self, from: data)
+                    completion(.success(logs))
+                } catch {
+                    print("Erro: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+
+    func deleteWaterLog(logId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        let url = baseURL.appendingPathComponent("/water/\(logId)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 204 {
                     completion(.success(()))
                 } else {
                     completion(.failure(URLError(.badServerResponse)))

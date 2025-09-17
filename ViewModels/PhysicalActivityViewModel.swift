@@ -26,8 +26,9 @@ class PhysicalActivityViewModel: ObservableObject {
     var manualDurationAsTimeInterval: TimeInterval {
         TimeInterval((manualHours * 3600) + (manualMinutes * 60) + manualSeconds)
     }
-    var manualDistanceAsDouble: Double {
-        Double(manualDistanceKm) + (Double(manualDistanceMeters) / 100.0)
+    var manualDistanceAsDouble: Double? {
+        let totalDistance = Double(manualDistanceKm) + (Double(manualDistanceMeters) / 100.0)
+        return totalDistance > 0 ? totalDistance : nil
     }
 
     private var networkService = NetworkService.shared
@@ -95,13 +96,11 @@ class PhysicalActivityViewModel: ObservableObject {
     }
     
     func saveManualActivity(completion: @escaping () -> Void) {
-        let distanceValue = manualDistanceAsDouble > 0 ? manualDistanceAsDouble : nil
-        
         let newActivity = Activity(
             id: nil,
             activityType: manualActivityType,
             duration: manualDurationAsTimeInterval,
-            distance: distanceValue,
+            distance: manualDistanceAsDouble,
             date: manualDate
         )
         

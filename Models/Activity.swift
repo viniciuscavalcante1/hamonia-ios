@@ -21,9 +21,13 @@ enum ActivityType: String, CaseIterable, Codable, Identifiable {
 
 struct Activity: Codable, Identifiable, Hashable {
     let id: Int?
-
     let activityType: ActivityType
     let duration: TimeInterval
     let distance: Double?
     let date: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id, duration, distance, date
+        case activityType = "activity_type"
+    }
 }
